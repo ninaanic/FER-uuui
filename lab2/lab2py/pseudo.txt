@@ -1,0 +1,64 @@
+rez_opo(ulazneKlauzule, cilj) {
+
+    neiskoristeneKlauzule = ulazneKlauzule          --> prepisi da se moze mijenjat, set()
+
+    //idea ako cilj = a v b --> ~a & ~b --> ciljne su obe? DA!
+
+    splitaj cilj po v ako se moze
+    svaki elem u cilju negiraj 
+    ciljnaKlauzula = cilj (koji je sada negiran)  --> lista od vise elem
+    
+
+    reduciraj(neiskoristeneKlauzule)  
+
+    dict path = {}                          --> za rekonstrukciju puta ('b (a, ~a v b)', ...) -> b smo dobili iz a i ~a v b
+    noveKlauzule = set()
+    skupPotpore = set()
+    skupPotpore.add(ciljnaKlauzula)
+
+    while true {
+        skupPotpore.add(noveKlauzule)
+
+        for (k1, k2) in uzmiDvijeKlauzule(neiskoristeneKlauzule, skupPotpore) { 
+            skupResolvenata = resolve(k1, k2) 
+            reduciraj(skupResolvenata)
+
+
+            if (NIL in skupResolvenata) {              --> uspjeli smo dokazat kontradikciju (vratili smo NIL) --> gotovi smo 
+                //todo dosli smo do kraja --> ispisi put do tuda + 'cilj is true' i zavrsi 
+            }
+            
+            noveKlauzule.append(skupRezolvenata)        --> u set novih dodaj rezolvente
+        }
+
+        //todo
+        if (svaki elem od noveKlauzule je i u (ulazneKlauzule U neiskoristeneKlauzule U ciljnaKlauzula)) {
+            --> ispisi 'cilj is false' i zavrsi 
+        }
+        neiskoristeneKlauzule.append(noveKlauzule)
+    }
+}
+
+reduciraj(skupKlauzala) radi i faktorizaciju i strategiju brisanja:
+- fatktorizacija: (a v a) = a 
+- strategija brisanja: 
+    1. ako imamo (a v b) 
+                 (a v b v c) onda se to moze reducirat na samo (a v b) posto (a v b v c) & (a v b) = (a v b)
+    2. (a v ~a) se moze obrisat i ako je samo ovako i ako je dio vece klauzule (npr (a v b v c v ~a) --> (b v c))
+- //optimize kako optimizirat da bude brze? 
+
+
+
+uzmiDvijeKlauzule(neiskoristeneKlauzule, skupPotpore) uzim na način:
+- barem jedna rodteljska klauzala dolazi iz skupa potpore (noveKlauzule U ciljnaKlauzula)
+- druga dolazi ili iz neiskoristeneKlauzule ili iz skupPotpore
+- na kraju prije return napravi: makni k1 i k2 iz lista iz kojih smo ih uzeli
+
+
+resolve(k1, k2) 
+- provjeri ako k1 i k2 daju prazan skup (ponistavaju se) i ako da stani odmah i vrati NIL
+- ako ne onda vrati sve moguce kombinacije razrjesivanja k1 i k2 
+- prije nego sto vratis jedno razrjesenje k1 i k2 zapami u dict path kako smo dosli do toga:
+    - key: nova klauzula koju cemo vratit
+    - value: k1 i k2 
+

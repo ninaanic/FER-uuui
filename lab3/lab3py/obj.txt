@@ -1,0 +1,17 @@
+# zad 1
+7/8 na autograderu 
+- ne prolaz:
+    - heldout_logic_f2_train.csv 
+        jer 2 razlicita rodtelja imaju istu djecu pa se uzmu predikcije samo do 1 a ne od oba zasebno
+
+# zad 2
+4/7 ili 5/7 na autograderu ovisno o pokretanju
+- ne prolaze:
+    - titanic_train_categorical.csv 
+        krivo ispisujemo grane odma na pocetku (greska u ID3 alg)
+    - train_4.csv
+        isto krivi ispis grana u ID3
+    - heldout_logic_f2_train.csv
+        isto krivi ispis grana u ID3 i posto ne radi u zad1 ne radi ni tu 
+
+--> sigurnih 70-80% za sada 
